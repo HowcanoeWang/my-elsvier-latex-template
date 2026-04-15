@@ -1,19 +1,16 @@
+# Elsevier LaTeX Template Notes
 
-## Can I using subfolders?
-LaTeX submissions containing subfolders cannot be processed by EM. All submission files – including figures, tables, and style and bibliographic files – must be stored at the same folder level.
+## Submission file layout
 
-## Template modules
+Elsevier Editorial Manager does not accept submissions with nested subfolders. Figures, tables, bibliography files, and style files should all stay in the same directory.
 
-### 1. 基础文档类和常用包
+## Document class and package setup
+
+The default template uses the `elsarticle` document class in `preprint` mode with Harvard-style citations. If you need review spacing, or a specific journal layout such as `1p`, `3p`, or `5p`, change the options in the `\documentclass` line instead of adding extra template comments back into `main.tex`.
 
 ```latex
-%% 文档类（用于 Elsevier）
 \documentclass[preprint,12pt,authoryear]{elsarticle}
 
-%% 期刊名称（可选）
-\journal{Artificial Intelligence in Agriculture}
-
-%% 常用包
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{lineno}
@@ -24,31 +21,44 @@ LaTeX submissions containing subfolders cannot be processed by EM. All submissio
 \usepackage[hyphenbreaks]{breakurl}
 \usepackage{setspace}
 \usepackage{indentfirst}
+
+\journal{Artificial Intelligence in Agriculture}
 ```
 
-模板中的说明：
-
-
-
-### 2. 前言（frontmatter）结构
+Common document class variants:
 
 ```latex
-%% 前言部分（标题、作者、单位、摘要等）
+\documentclass[authoryear,preprint,review,12pt]{elsarticle}
+\documentclass[final,1p,times,authoryear]{elsarticle}
+\documentclass[final,1p,times,twocolumn,authoryear]{elsarticle}
+\documentclass[final,3p,times,authoryear]{elsarticle}
+\documentclass[final,3p,times,twocolumn,authoryear]{elsarticle}
+\documentclass[final,5p,times,authoryear]{elsarticle}
+\documentclass[final,5p,times,twocolumn,authoryear]{elsarticle}
+```
+
+## Front matter structure
+
+`frontmatter` is where title, author information, affiliations, abstract, graphical abstract, highlights, and keywords are defined. If you need corresponding-author notes, author footnotes, title notes, or author-homepage links, use commands such as `\corref`, `\cortext`, `\fnref`, `\fntext`, `\tnoteref`, `\tnotetext`, `\ead`, and `\ead[url]` inside this block.
+
+For multiple affiliations, assign labels in `\author[...]` and `\affiliation[...]` so authors can be linked explicitly to institutions. Add the paper title immediately after `\begin{frontmatter}` with `\title{Your Paper Title}`.
+
+```latex
 \begin{frontmatter}
 
 \title{Your Paper Title}
 
-\author[1]{Haozhou Wang\corref{cor1}}
-\author[1]{Wei Guo}
+\author[1]{Author One\corref{cor1}}
+\author[1]{Author Two}
 \cortext[cor1]{Corresponding author}
-\ead{haozhou-wang@g.ecc.u-tokyo.ac.jp}
+\ead{name@example.com}
 
-\affiliation[1]{organization={Graduate School of Agricultural and Life Sciences, The University of Tokyo},
-            addressline={1-1-1 Midori-cho},
-            city={Nishi-Tokyo},
-            postcode={188-0002},
-            state={Tokyo},
-            country={Japan}}
+\affiliation[1]{organization={Institution Name},
+            addressline={Street Address},
+            city={City},
+            postcode={Postcode},
+            state={State},
+            country={Country}}
 
 \begin{abstract}
 Abstract text.
@@ -70,51 +80,60 @@ keyword1 \sep keyword2 \sep keyword3
 \end{frontmatter}
 ```
 
-说明：
+Keywords should be separated with `\sep`. If the target journal requires PACS or MSC classification, add them in the same block using the journal's requested format.
 
-> keywords here, in the form: keyword \sep keyword
-> 
-> PACS codes here, in the form: \PACS code \sep code
-> 
-> MSC codes here, in the form: \MSC code \sep code
-or \MSC[2008] code \sep code (2000 is the default)
+## Line numbers and spacing
 
-### 4. 行号与双倍行距
+Line numbers are typically enabled for review submissions. Double spacing can be turned on when required by the journal or supervisor.
 
 ```latex
-%% 行号（用于审稿）
 \linenumbers
-
-%% 双倍行距（可选）
-\doublespacing
+% \doublespacing
 ```
 
-### 5. 数学与公式示例
+## Sectioning and cross-references
+
+Use `\section`, `\subsection`, and `\subsubsection` for normal structure, and pair them with `\label` plus `\ref` for cross-references.
 
 ```latex
-%% 行内数学
+\section{Example Section}
+\label{sec1}
+
+Section text. See Subsection \ref{subsec1}.
+
+\subsection{Example Subsection}
+\label{subsec1}
+
+Subsection text.
+```
+
+## Mathematics
+
+The template already loads `amsmath`, so you can use inline math, numbered equations, unnumbered equations, and aligned multi-line formulas directly.
+
+```latex
 This is an example for the symbol $\alpha$.
 
-%% 单行公式
 \begin{equation}
 f(x) = (x+a)(x+b)
-\label{eq:1}
 \end{equation}
 
-%% 多行对齐公式
+\begin{equation*}
+f(x) = (x+a)(x+b)
+\end{equation*}
+
 \begin{align}
 f(x) &= (x+a)(x+b) \\
      &= x^2 + (a+b)x + ab
-\label{eq:2}
 \end{align}
 ```
 
-### 6. 表格与图表模板
+## Tables and figures
 
-表格
+Use `table` with `tabular` for structured data and `figure` with `\includegraphics` for images. Keep figure files in the same directory as the main source when preparing a submission package.
 
 ```latex
-\begin{table}[htbp]
+\begin{table}[t]
 \centering
 \begin{tabular}{l c r}
 1 & 2 & 3 \\
@@ -126,10 +145,8 @@ f(x) &= (x+a)(x+b) \\
 \end{table}
 ```
 
-图表
-
-```
-\begin{figure}[htbp]
+```latex
+\begin{figure}[t]
 \centering
 \includegraphics{your-figure-filename}
 \caption{Figure Caption}
@@ -137,18 +154,20 @@ f(x) &= (x+a)(x+b) \\
 \end{figure}
 ```
 
-### 7. 引用与参考文献
+## Citations and bibliography
+
+The template uses `natbib`, so `\citet{...}` produces textual citations and `\citep{...}` produces parenthetical citations. Bibliography data should live in `references.bib`, and the `.bst` file in this repository is already configured for Elsevier Harvard style.
 
 ```latex
-%% natbib 风格引用
 Example citation: \citet{author2022}, \citep{author2022}.
 
-%% 参考文献样式和数据库
 \bibliographystyle{elsarticle-harv}
-\bibliography{references}   % references.bib in BibTex format
+\bibliography{references}
 ```
 
-### 8. 附录（可选）
+## Appendix
+
+Appendices start after `\appendix`, and then continue with normal section commands.
 
 ```latex
 \appendix
